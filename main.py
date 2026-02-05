@@ -2,7 +2,7 @@ import requests
 from bs4 import BeautifulSoup
 import time
 import re
-from urllib.parse import quote_plus, urljoin
+from urllib.parse import quote_plus, urljoin, urlparse
 import random
 import hashlib
 import pickle
@@ -22,7 +22,7 @@ import logging
 
 class Config:
     APP_NAME = "T2Scrap"
-    VERSION = "3.1.0"
+    VERSION = "3.2.0"
     TIMEOUT = 15
     MAX_RETRIES = 2
     RETRY_DELAY = 1
@@ -32,12 +32,15 @@ class Config:
     CACHE_TTL = 3600
     HISTORY_FILE = "t2scrap_history.json"
     LOG_FILE = "t2scrap.log"
-    DEBUG = False
+    DEBUG = True  # Enable debug for troubleshooting
 
 logging.basicConfig(
     level=logging.DEBUG if Config.DEBUG else logging.WARNING,
     format='%(asctime)s | %(levelname)s | %(message)s',
-    handlers=[logging.FileHandler(Config.LOG_FILE, encoding='utf-8')]
+    handlers=[
+        logging.FileHandler(Config.LOG_FILE, encoding='utf-8'),
+        logging.StreamHandler()  # Also log to console
+    ]
 )
 logger = logging.getLogger(Config.APP_NAME)
 
@@ -164,6 +167,17 @@ def clean_text(text: str) -> str:
         return ""
     text = ' '.join(text.split())
     return text.strip()
+
+def slugify(text: str, max_length: int = 80) -> str:
+    """Convert text to URL-friendly slug"""
+    # Remove special characters
+    slug = re.sub(r'[^a-zA-Z0-9\s-]', '', text.lower())
+    # Replace spaces with hyphens
+    slug = re.sub(r'\s+', '-', slug)
+    # Remove multiple hyphens
+    slug = re.sub(r'-+', '-', slug)
+    # Trim to max length
+    return slug[:max_length].strip('-')
 
 class CacheManager:
     def __init__(self, cache_dir: str = Config.CACHE_DIR, ttl: int = Config.CACHE_TTL):
@@ -295,13 +309,14 @@ class BaseScraper(ABC):
                 response = self.session.get(url, headers=headers, timeout=Config.TIMEOUT)
                 if response.status_code == 200:
                     return response
+                logger.debug(f"Request to {url} returned status {response.status_code}")
             except Exception as e:
                 logger.debug(f"Request error ({attempt+1}): {e}")
             time.sleep(Config.RETRY_DELAY)
         return None
 
 # ============================================================
-# Daraz Scraper (Nepal) - Most Reliable
+# Daraz Scraper (Nepal) - FIXED VERSION
 # ============================================================
 
 class DarazScraper(BaseScraper):
@@ -323,73 +338,175 @@ class DarazScraper(BaseScraper):
     def search(self, query: str) -> List[Product]:
         products = self._search_api(query)
         if not products:
+            logger.info("API search failed, trying HTML scraping...")
             products = self._search_html(query)
         return products[:Config.RESULTS_PER_SITE]
+    
+    def _build_product_url(self, item: dict, name: str) -> str:
+        """Build proper Daraz product URL from API response item"""
+        
+        # Method 1: Try to get direct URL from various fields
+        url_fields = ['itemUrl', 'productUrl', 'href', 'link', 'url']
+        
+        for field in url_fields:
+            url = item.get(field, '')
+            if url and isinstance(url, str):
+                # Fix protocol-relative URLs
+                if url.startswith('//'):
+                    url = 'https:' + url
+                # Fix relative URLs
+                elif url.startswith('/'):
+                    url = self.base_url + url
+                # Add base URL if needed
+                elif not url.startswith('http'):
+                    url = self.base_url + '/' + url.lstrip('/')
+                
+                # Validate it's a product URL (contains /products/ or item ID pattern)
+                if '/products/' in url and ('-i' in url or '.html' in url):
+                    logger.debug(f"Found valid URL from {field}: {url}")
+                    return url
+        
+        # Method 2: Build URL from item ID and SKU
+        item_id = item.get('itemId') or item.get('nid') or item.get('id')
+        sku_id = item.get('skuId') or item.get('sku')
+        
+        if item_id:
+            # Create URL-friendly slug from product name
+            slug = slugify(name)
+            
+            if sku_id:
+                url = f"{self.base_url}/products/{slug}-i{item_id}-s{sku_id}.html"
+            else:
+                url = f"{self.base_url}/products/{slug}-i{item_id}.html"
+            
+            logger.debug(f"Built URL from item ID: {url}")
+            return url
+        
+        # Method 3: Try to extract from other data
+        # Some responses have the URL embedded in clickTrackInfo or similar
+        click_info = item.get('clickTrackInfo', '')
+        if click_info and 'itemId' in str(click_info):
+            match = re.search(r'itemId[:\s]*(\d+)', str(click_info))
+            if match:
+                item_id = match.group(1)
+                slug = slugify(name)
+                url = f"{self.base_url}/products/{slug}-i{item_id}.html"
+                logger.debug(f"Built URL from clickTrackInfo: {url}")
+                return url
+        
+        logger.warning(f"Could not build URL for item: {name[:50]}")
+        return ""
     
     def _search_api(self, query: str) -> List[Product]:
         products = []
         try:
+            # Use the catalog search endpoint
             api_url = f"{self.base_url}/catalog/?ajax=true&q={quote_plus(query)}"
-            headers = self._get_headers()
-            headers['X-Requested-With'] = 'XMLHttpRequest'
-            headers['Accept'] = 'application/json'
             
+            headers = self._get_headers()
+            headers.update({
+                'X-Requested-With': 'XMLHttpRequest',
+                'Accept': 'application/json, text/javascript, */*; q=0.01',
+                'Referer': f"{self.base_url}/catalog/?q={quote_plus(query)}",
+            })
+            
+            logger.info(f"Fetching Daraz API: {api_url}")
             response = self.session.get(api_url, headers=headers, timeout=Config.TIMEOUT)
             
             if response.status_code == 200:
-                data = response.json()
+                try:
+                    data = response.json()
+                except json.JSONDecodeError:
+                    logger.error("Failed to parse Daraz API response as JSON")
+                    return products
+                
+                # Get items from the response
                 items = data.get('mods', {}).get('listItems', [])
+                logger.info(f"Found {len(items)} items in Daraz API response")
+                
+                # Log first item structure for debugging
+                if items and Config.DEBUG:
+                    logger.debug(f"Sample item keys: {list(items[0].keys())}")
                 
                 for item in items:
                     try:
-                        price = float(item.get('price', 0))
-                        if not price:
+                        # Get price
+                        price = None
+                        price_val = item.get('price')
+                        if price_val:
+                            try:
+                                price = float(str(price_val).replace(',', ''))
+                            except ValueError:
+                                continue
+                        
+                        if not price or price <= 0:
                             continue
                         
+                        # Get name
                         name = clean_text(item.get('name', ''))
                         if not name:
                             continue
                         
-                        # Build proper URL
-                        product_url = item.get('productUrl', '')
-                        if product_url:
-                            if product_url.startswith('//'):
-                                product_url = 'https:' + product_url
-                            elif not product_url.startswith('http'):
-                                product_url = urljoin(self.base_url, product_url)
+                        # Build proper product URL
+                        product_url = self._build_product_url(item, name)
                         
+                        # Get original price
                         original = None
-                        if item.get('originalPrice'):
+                        orig_price = item.get('originalPrice')
+                        if orig_price:
                             try:
-                                original = float(item.get('originalPrice'))
-                            except:
+                                original = float(str(orig_price).replace(',', ''))
+                            except ValueError:
                                 pass
                         
+                        # Get discount
                         discount = None
-                        if item.get('discount'):
-                            match = re.search(r'(\d+)', str(item.get('discount')))
+                        disc = item.get('discount')
+                        if disc:
+                            match = re.search(r'(\d+)', str(disc))
                             if match:
                                 discount = float(match.group(1))
                         
+                        # Get rating
                         rating = None
-                        if item.get('ratingScore'):
+                        rating_val = item.get('ratingScore')
+                        if rating_val:
                             try:
-                                rating = float(item.get('ratingScore'))
-                            except:
+                                rating = float(rating_val)
+                            except ValueError:
                                 pass
                         
+                        # Get reviews count
                         reviews = None
-                        if item.get('review'):
+                        reviews_val = item.get('review') or item.get('reviewCount')
+                        if reviews_val:
                             try:
-                                reviews = int(item.get('review'))
-                            except:
+                                reviews = int(str(reviews_val).replace(',', ''))
+                            except ValueError:
                                 pass
                         
-                        image = item.get('image', '')
-                        if image and image.startswith('//'):
-                            image = 'https:' + image
+                        # Get image URL
+                        image = item.get('image', '') or item.get('thumbUrl', '')
+                        if image:
+                            if image.startswith('//'):
+                                image = 'https:' + image
+                            elif not image.startswith('http'):
+                                image = 'https://' + image.lstrip('/')
                         
-                        products.append(Product(
+                        # Get seller info
+                        seller = item.get('sellerName', '') or item.get('brandName', '')
+                        
+                        # Check shipping
+                        free_shipping = item.get('freeShipping', False)
+                        if not free_shipping:
+                            # Check in icons or tags
+                            icons = item.get('icons', [])
+                            for icon in icons:
+                                if 'free' in str(icon).lower() and 'ship' in str(icon).lower():
+                                    free_shipping = True
+                                    break
+                        
+                        product = Product(
                             platform=self.name,
                             name=name[:150],
                             price=price,
@@ -400,61 +517,155 @@ class DarazScraper(BaseScraper):
                             image_url=image,
                             rating=rating,
                             reviews_count=reviews,
-                            free_shipping=item.get('freeShipping', False)
-                        ))
+                            seller=seller,
+                            free_shipping=free_shipping
+                        )
+                        
+                        products.append(product)
+                        logger.debug(f"Added product: {name[:50]}... URL: {product_url[:80]}...")
+                        
                     except Exception as e:
-                        logger.debug(f"Daraz item error: {e}")
+                        logger.debug(f"Error parsing Daraz item: {e}")
                         continue
+                        
+            else:
+                logger.error(f"Daraz API returned status {response.status_code}")
+                
         except Exception as e:
-            logger.debug(f"Daraz API error: {e}")
+            logger.error(f"Daraz API error: {e}")
         
+        logger.info(f"Daraz API returned {len(products)} products")
         return products
     
     def _search_html(self, query: str) -> List[Product]:
+        """Fallback HTML scraping method"""
         products = []
         url = self.search_url.format(query=quote_plus(query))
+        
+        logger.info(f"Fetching Daraz HTML: {url}")
         response = self._make_request(url)
         
         if not response:
+            logger.error("Failed to fetch Daraz HTML page")
             return products
         
         soup = BeautifulSoup(response.content, 'html.parser')
         
-        # Try multiple selectors
-        cards = soup.select('[data-qa-locator="product-item"]')
-        if not cards:
-            cards = soup.select('.gridItem--Yd0sa')
-        if not cards:
-            cards = soup.select('div[data-tracking="product-card"]')
+        # Try to find embedded JSON data (Daraz often embeds product data in script tags)
+        script_data = None
+        for script in soup.find_all('script'):
+            script_text = script.string or ''
+            if 'listItems' in script_text or 'window.pageData' in script_text:
+                # Try to extract JSON from script
+                match = re.search(r'window\.pageData\s*=\s*(\{.*?\});', script_text, re.DOTALL)
+                if match:
+                    try:
+                        script_data = json.loads(match.group(1))
+                        items = script_data.get('mods', {}).get('listItems', [])
+                        if items:
+                            logger.info(f"Found {len(items)} items in embedded JSON")
+                            for item in items:
+                                try:
+                                    price = float(item.get('price', 0))
+                                    if not price:
+                                        continue
+                                    name = clean_text(item.get('name', ''))
+                                    if not name:
+                                        continue
+                                    
+                                    product_url = self._build_product_url(item, name)
+                                    
+                                    image = item.get('image', '')
+                                    if image and image.startswith('//'):
+                                        image = 'https:' + image
+                                    
+                                    products.append(Product(
+                                        platform=self.name,
+                                        name=name[:150],
+                                        price=price,
+                                        currency=self.currency,
+                                        url=product_url,
+                                        image_url=image
+                                    ))
+                                except:
+                                    continue
+                    except json.JSONDecodeError:
+                        pass
+        
+        if products:
+            return products
+        
+        # Fallback: Try HTML selectors
+        selectors = [
+            '[data-qa-locator="product-item"]',
+            '.gridItem--Yd0sa',
+            'div[data-tracking="product-card"]',
+            '.Bm3ON',
+            'div[data-item-id]'
+        ]
+        
+        cards = []
+        for selector in selectors:
+            cards = soup.select(selector)
+            if cards:
+                logger.info(f"Found {len(cards)} cards with selector: {selector}")
+                break
         
         for card in cards:
             try:
-                # Name
-                name_elem = card.select_one('.title--wFj93') or card.select_one('[data-qa-locator="product-name"]')
+                # Find name
+                name_elem = (
+                    card.select_one('.title--wFj93') or
+                    card.select_one('[data-qa-locator="product-name"]') or
+                    card.select_one('a[title]') or
+                    card.select_one('h2') or
+                    card.select_one('.title')
+                )
+                
                 if not name_elem:
                     continue
-                name = clean_text(name_elem.get_text())
+                
+                name = clean_text(name_elem.get_text() or name_elem.get('title', ''))
                 if not name:
                     continue
                 
-                # Price
-                price_elem = card.select_one('.price--NVB62') or card.select_one('[data-qa-locator="product-price"]')
+                # Find price
+                price_elem = (
+                    card.select_one('.price--NVB62') or
+                    card.select_one('[data-qa-locator="product-price"]') or
+                    card.select_one('.price') or
+                    card.select_one('[class*="price"]')
+                )
+                
                 if not price_elem:
                     continue
+                
                 price, _ = extract_price(price_elem.get_text(), self.currency)
                 if not price:
                     continue
                 
-                # URL
+                # Find URL - this is the key part
                 link = card.find('a', href=True)
-                url = urljoin(self.base_url, link['href']) if link else ""
+                product_url = ""
                 
-                # Image
+                if link:
+                    href = link.get('href', '')
+                    if href:
+                        if href.startswith('//'):
+                            product_url = 'https:' + href
+                        elif href.startswith('/'):
+                            product_url = self.base_url + href
+                        elif href.startswith('http'):
+                            product_url = href
+                        else:
+                            product_url = self.base_url + '/' + href
+                
+                # Find image
                 img = card.find('img')
                 image_url = ""
                 if img:
                     image_url = img.get('src') or img.get('data-src', '')
-                    if image_url.startswith('//'):
+                    if image_url and image_url.startswith('//'):
                         image_url = 'https:' + image_url
                 
                 products.append(Product(
@@ -462,12 +673,15 @@ class DarazScraper(BaseScraper):
                     name=name[:150],
                     price=price,
                     currency=self.currency,
-                    url=url,
+                    url=product_url,
                     image_url=image_url
                 ))
-            except Exception:
+                
+            except Exception as e:
+                logger.debug(f"Error parsing HTML card: {e}")
                 continue
         
+        logger.info(f"Daraz HTML returned {len(products)} products")
         return products
 
 # ============================================================
@@ -522,16 +736,14 @@ class EbayScraper(BaseScraper):
                 if not price:
                     continue
                 
-                # URL - IMPORTANT: Get proper URL
+                # URL
                 link_elem = card.select_one('a.s-item__link')
-                url = ""
+                product_url = ""
                 if link_elem:
-                    url = link_elem.get('href', '')
-                    # Clean eBay tracking params but keep valid URL
-                    if '?' in url:
-                        url = url.split('?')[0]
-                    if not url.startswith('http'):
-                        url = urljoin(self.base_url, url)
+                    product_url = link_elem.get('href', '')
+                    # Keep the full URL, just remove tracking params if needed
+                    if product_url and not product_url.startswith('http'):
+                        product_url = urljoin(self.base_url, product_url)
                 
                 # Image
                 img_elem = card.select_one('.s-item__image-img')
@@ -557,7 +769,7 @@ class EbayScraper(BaseScraper):
                     name=name[:150],
                     price=price,
                     currency=self.currency,
-                    url=url,
+                    url=product_url,
                     image_url=image_url,
                     condition=condition,
                     free_shipping=free_shipping
@@ -569,7 +781,7 @@ class EbayScraper(BaseScraper):
         return products[:Config.RESULTS_PER_SITE]
 
 # ============================================================
-# AliExpress Scraper - Alternative to Alibaba
+# AliExpress Scraper
 # ============================================================
 
 class AliExpressScraper(BaseScraper):
@@ -582,61 +794,80 @@ class AliExpressScraper(BaseScraper):
     
     def search(self, query: str) -> List[Product]:
         products = []
+        url = self.search_url.format(query=quote_plus(query.replace(' ', '-')))
         
-        # Use API-like endpoint
-        try:
-            api_url = f"https://www.aliexpress.com/fn/search-pc/index?searchText={quote_plus(query)}&catId=0&initiative_id=SB_&origin=y&spm=a2g0o.home.0.0"
-            headers = self._get_headers()
-            headers['Referer'] = 'https://www.aliexpress.com/'
+        logger.info(f"Fetching AliExpress: {url}")
+        response = self._make_request(url)
+        
+        if not response:
+            return products
+        
+        soup = BeautifulSoup(response.content, 'html.parser')
+        
+        # Try to find JSON data in script tags
+        for script in soup.find_all('script'):
+            script_text = script.string or ''
+            if 'window._dida_config_' in script_text or 'runParams' in script_text:
+                # Try to extract product data
+                matches = re.findall(r'"productId":"(\d+)"', script_text)
+                for product_id in matches[:Config.RESULTS_PER_SITE]:
+                    products.append(Product(
+                        platform=self.name,
+                        name=f"AliExpress Product {product_id}",
+                        price=0.01,  # Placeholder
+                        currency=self.currency,
+                        url=f"https://www.aliexpress.com/item/{product_id}.html"
+                    ))
+        
+        # Try HTML selectors
+        if not products:
+            cards = soup.select('[class*="SearchResult"]') or soup.select('[class*="product-card"]')
             
-            response = self.session.get(api_url, headers=headers, timeout=Config.TIMEOUT)
-            
-            if response.status_code == 200:
-                # Try to parse embedded JSON
-                soup = BeautifulSoup(response.content, 'html.parser')
-                
-                # Look for product cards
-                cards = soup.select('[class*="SearchResultContainer"]') or soup.select('[class*="product-card"]')
-                
-                for card in cards[:Config.RESULTS_PER_SITE]:
-                    try:
-                        name_elem = card.select_one('h1') or card.select_one('h3') or card.select_one('[class*="title"]')
-                        if not name_elem:
-                            continue
-                        name = clean_text(name_elem.get_text())
-                        
-                        price_elem = card.select_one('[class*="price"]')
-                        if not price_elem:
-                            continue
-                        price, _ = extract_price(price_elem.get_text(), self.currency)
-                        if not price:
-                            continue
-                        
-                        link = card.find('a', href=True)
-                        url = ""
-                        if link:
-                            url = link['href']
-                            if url.startswith('//'):
-                                url = 'https:' + url
-                            elif not url.startswith('http'):
-                                url = urljoin(self.base_url, url)
-                        
-                        products.append(Product(
-                            platform=self.name,
-                            name=name[:150],
-                            price=price,
-                            currency=self.currency,
-                            url=url
-                        ))
-                    except:
+            for card in cards[:Config.RESULTS_PER_SITE]:
+                try:
+                    name_elem = card.select_one('h1') or card.select_one('h3') or card.select_one('[class*="title"]')
+                    if not name_elem:
                         continue
-        except Exception as e:
-            logger.debug(f"AliExpress error: {e}")
+                    name = clean_text(name_elem.get_text())
+                    
+                    price_elem = card.select_one('[class*="price"]')
+                    if not price_elem:
+                        continue
+                    price, _ = extract_price(price_elem.get_text(), self.currency)
+                    if not price:
+                        continue
+                    
+                    link = card.find('a', href=True)
+                    product_url = ""
+                    if link:
+                        product_url = link['href']
+                        if product_url.startswith('//'):
+                            product_url = 'https:' + product_url
+                        elif not product_url.startswith('http'):
+                            product_url = urljoin(self.base_url, product_url)
+                    
+                    img = card.find('img')
+                    image_url = ""
+                    if img:
+                        image_url = img.get('src') or img.get('data-src', '')
+                        if image_url and image_url.startswith('//'):
+                            image_url = 'https:' + image_url
+                    
+                    products.append(Product(
+                        platform=self.name,
+                        name=name[:150],
+                        price=price,
+                        currency=self.currency,
+                        url=product_url,
+                        image_url=image_url
+                    ))
+                except:
+                    continue
         
         return products
 
 # ============================================================
-# Amazon Scraper - With Better Headers
+# Amazon Scraper
 # ============================================================
 
 class AmazonScraper(BaseScraper):
@@ -664,7 +895,6 @@ class AmazonScraper(BaseScraper):
         products = []
         url = self.search_url.format(query=quote_plus(query))
         
-        # Add random delay to avoid detection
         time.sleep(random.uniform(0.5, 1.5))
         
         response = self._make_request(url)
@@ -673,14 +903,12 @@ class AmazonScraper(BaseScraper):
         
         soup = BeautifulSoup(response.content, 'html.parser')
         
-        # Try different selectors
         cards = soup.select('[data-component-type="s-search-result"]')
         if not cards:
             cards = soup.select('.s-result-item[data-asin]')
         
         for card in cards:
             try:
-                # Skip sponsored
                 if card.select_one('.s-sponsored-label-info-icon'):
                     continue
                 
@@ -688,7 +916,6 @@ class AmazonScraper(BaseScraper):
                 if not asin:
                     continue
                 
-                # Name
                 name_elem = (
                     card.select_one('h2 a span') or
                     card.select_one('h2 span') or
@@ -700,7 +927,6 @@ class AmazonScraper(BaseScraper):
                 if not name or len(name) < 5:
                     continue
                 
-                # Price
                 price = None
                 price_elem = card.select_one('.a-price .a-offscreen')
                 if price_elem:
@@ -721,29 +947,19 @@ class AmazonScraper(BaseScraper):
                 if not price:
                     continue
                 
-                # Original price
                 original_price = None
                 original_elem = card.select_one('.a-text-price .a-offscreen')
                 if original_elem:
                     original_price, _ = extract_price(original_elem.get_text())
                 
-                # URL - Build from ASIN
-                url = f"{self.base_url}/dp/{asin}"
+                # Build URL from ASIN
+                product_url = f"{self.base_url}/dp/{asin}"
                 
-                # Also try to get link directly
-                link_elem = card.select_one('h2 a')
-                if link_elem and link_elem.get('href'):
-                    href = link_elem.get('href')
-                    if '/dp/' in href or '/gp/' in href:
-                        url = urljoin(self.base_url, href)
-                
-                # Image
                 image_url = ""
                 img_elem = card.select_one('img.s-image')
                 if img_elem:
                     image_url = img_elem.get('src', '')
                 
-                # Rating
                 rating = None
                 rating_elem = card.select_one('.a-icon-star-small .a-icon-alt')
                 if rating_elem:
@@ -751,7 +967,6 @@ class AmazonScraper(BaseScraper):
                     if match:
                         rating = float(match.group(1))
                 
-                # Reviews
                 reviews = None
                 reviews_elem = card.select_one('[data-csa-c-content-id*="reviews"]') or card.select_one('span.a-size-base.s-underline-text')
                 if reviews_elem:
@@ -759,10 +974,8 @@ class AmazonScraper(BaseScraper):
                     if match:
                         reviews = int(match.group(1).replace(',', ''))
                 
-                # Prime
                 is_prime = bool(card.select_one('.a-icon-prime'))
                 
-                # Discount
                 discount = None
                 if original_price and original_price > price:
                     discount = round(((original_price - price) / original_price) * 100)
@@ -774,7 +987,7 @@ class AmazonScraper(BaseScraper):
                     currency=self.currency,
                     original_price=original_price,
                     discount_percent=discount,
-                    url=url,
+                    url=product_url,
                     image_url=image_url,
                     rating=rating,
                     reviews_count=reviews,
@@ -809,19 +1022,16 @@ class FlipkartScraper(BaseScraper):
         
         soup = BeautifulSoup(response.content, 'html.parser')
         
-        # Multiple selector strategies
         cards = soup.select('div._1AtVbE > div._13oc-S')
         if not cards:
             cards = soup.select('div._2kHMtA')
         if not cards:
             cards = soup.select('div._1xHGtK._373qXS')
         if not cards:
-            # Try grid layout
             cards = soup.select('div._4ddWXP')
         
         for card in cards:
             try:
-                # Name
                 name_elem = (
                     card.select_one('a.s1Q9rs') or
                     card.select_one('div._4rR01T') or
@@ -834,7 +1044,6 @@ class FlipkartScraper(BaseScraper):
                 if not name:
                     continue
                 
-                # Price
                 price_elem = (
                     card.select_one('div._30jeq3') or
                     card.select_one('div._1_WHN1')
@@ -845,13 +1054,11 @@ class FlipkartScraper(BaseScraper):
                 if not price:
                     continue
                 
-                # Original price
                 original_price = None
                 original_elem = card.select_one('div._3I9_wc')
                 if original_elem:
                     original_price, _ = extract_price(original_elem.get_text())
                 
-                # Discount
                 discount = None
                 discount_elem = card.select_one('div._3Ay6Sb')
                 if discount_elem:
@@ -859,20 +1066,17 @@ class FlipkartScraper(BaseScraper):
                     if match:
                         discount = float(match.group(1))
                 
-                # URL
                 link = card.find('a', href=True)
-                url = ""
+                product_url = ""
                 if link:
                     href = link.get('href', '')
-                    url = urljoin(self.base_url, href)
+                    product_url = urljoin(self.base_url, href)
                 
-                # Image
                 img = card.select_one('img._396cs4') or card.select_one('img._2r_T1I')
                 image_url = ""
                 if img:
                     image_url = img.get('src') or img.get('data-src', '')
                 
-                # Rating
                 rating = None
                 rating_elem = card.select_one('div._3LWZlK')
                 if rating_elem:
@@ -888,7 +1092,7 @@ class FlipkartScraper(BaseScraper):
                     currency=self.currency,
                     original_price=original_price,
                     discount_percent=discount,
-                    url=url,
+                    url=product_url,
                     image_url=image_url,
                     rating=rating
                 ))
@@ -899,7 +1103,7 @@ class FlipkartScraper(BaseScraper):
         return products[:Config.RESULTS_PER_SITE]
 
 # ============================================================
-# Walmart Scraper - New Addition
+# Walmart Scraper
 # ============================================================
 
 class WalmartScraper(BaseScraper):
@@ -923,14 +1127,12 @@ class WalmartScraper(BaseScraper):
         
         soup = BeautifulSoup(response.content, 'html.parser')
         
-        # Find product grid
         cards = soup.select('[data-item-id]')
         if not cards:
             cards = soup.select('div[data-testid="item-stack"]')
         
         for card in cards:
             try:
-                # Name
                 name_elem = card.select_one('[data-automation-id="product-title"]') or card.select_one('span.lh-title')
                 if not name_elem:
                     continue
@@ -938,7 +1140,6 @@ class WalmartScraper(BaseScraper):
                 if not name:
                     continue
                 
-                # Price
                 price_elem = card.select_one('[data-automation-id="product-price"]') or card.select_one('[itemprop="price"]')
                 if not price_elem:
                     continue
@@ -946,18 +1147,17 @@ class WalmartScraper(BaseScraper):
                 if not price:
                     continue
                 
-                # URL
                 link = card.find('a', href=True)
-                url = ""
+                product_url = ""
                 if link:
-                    url = urljoin(self.base_url, link['href'])
+                    product_url = urljoin(self.base_url, link['href'])
                 
                 products.append(Product(
                     platform=self.name,
                     name=name[:150],
                     price=price,
                     currency=self.currency,
-                    url=url
+                    url=product_url
                 ))
             except:
                 continue
@@ -990,6 +1190,10 @@ class T2Scrap:
         self._current_results = []
         start_time = time.time()
         
+        print(f"\n{'='*50}")
+        print(f"Searching for: {query}")
+        print(f"{'='*50}")
+        
         def search_platform(scraper: BaseScraper) -> Tuple[str, List[Product], bool]:
             if use_cache:
                 cached = self.cache.get(scraper.name, query)
@@ -1017,6 +1221,11 @@ class T2Scrap:
                     status = "✓" if products else "✗"
                     cache_tag = " (cached)" if from_cache else ""
                     print(f"  {status} {platform}: {len(products)} products{cache_tag}")
+                    
+                    # Log sample URL for debugging
+                    if products and Config.DEBUG:
+                        print(f"    Sample URL: {products[0].url[:80]}...")
+                        
                 except Exception as e:
                     logger.error(f"Future error: {e}")
         
@@ -1031,7 +1240,26 @@ class T2Scrap:
         )
         
         self.history.add(result)
+        
+        print(f"\nTotal: {result.total_products} products in {search_time:.2f}s")
+        if result.best_deal:
+            print(f"Best deal: {result.best_deal.currency} {result.best_deal.price} on {result.best_deal.platform}")
+        print(f"{'='*50}\n")
+        
         return result
     
     def cleanup(self) -> None:
         pass
+
+
+# Test the scraper directly
+if __name__ == "__main__":
+    scraper = DarazScraper(country='np')
+    products = scraper.search("laptop")
+    
+    print(f"\nFound {len(products)} products:")
+    for i, p in enumerate(products[:5], 1):
+        print(f"\n{i}. {p.name[:60]}...")
+        print(f"   Price: {p.currency} {p.price}")
+        print(f"   URL: {p.url}")
+        print(f"   Image: {p.image_url[:60] if p.image_url else 'None'}...")

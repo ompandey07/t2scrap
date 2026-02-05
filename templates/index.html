@@ -379,6 +379,29 @@
             gap: 20px;
         }
 
+        .best-deal-image {
+            width: 100px;
+            height: 100px;
+            border-radius: 8px;
+            overflow: hidden;
+            background: var(--bg-tertiary);
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .best-deal-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .best-deal-image .no-image {
+            color: var(--text-muted);
+            font-size: 2rem;
+        }
+
         .best-deal-info { flex: 1; }
         .best-deal-title { font-size: 0.95rem; font-weight: 600; margin-bottom: 8px; line-height: 1.4; }
 
@@ -420,6 +443,38 @@
         }
 
         .deal-btn:hover { background: #16a34a; }
+
+        /* View Toggle */
+        .view-toggle {
+            display: flex;
+            gap: 4px;
+            background: var(--bg-tertiary);
+            padding: 4px;
+            border-radius: 6px;
+        }
+
+        .view-toggle-btn {
+            padding: 6px 12px;
+            background: transparent;
+            border: none;
+            border-radius: 4px;
+            color: var(--text-muted);
+            font-size: 0.75rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            transition: all 0.15s;
+        }
+
+        .view-toggle-btn.active {
+            background: var(--accent);
+            color: white;
+        }
+
+        .view-toggle-btn:hover:not(.active) {
+            color: var(--text);
+        }
 
         /* Table */
         .table-card {
@@ -493,7 +548,7 @@
         .data-table th.right { text-align: right; }
 
         .data-table td {
-            padding: 8px 12px;
+            padding: 10px 12px;
             font-size: 0.8rem;
             border-bottom: 1px solid var(--border);
             vertical-align: middle;
@@ -519,6 +574,30 @@
         .rank.r2 { background: var(--accent); color: white; }
         .rank.r3 { background: var(--purple); color: white; }
 
+        /* Product Image */
+        .product-image {
+            width: 50px;
+            height: 50px;
+            border-radius: 6px;
+            overflow: hidden;
+            background: var(--bg-tertiary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .product-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .product-image .no-img {
+            color: var(--text-muted);
+            font-size: 1.2rem;
+        }
+
         .platform-badge {
             display: inline-flex;
             align-items: center;
@@ -537,7 +616,18 @@
         .platform-badge.walmart { background: rgba(0,113,220,0.15); color: var(--walmart); }
 
         .product-cell {
-            max-width: 300px;
+            max-width: 280px;
+        }
+
+        .product-info {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .product-details {
+            flex: 1;
+            min-width: 0;
         }
 
         .product-name {
@@ -605,6 +695,134 @@
 
         .no-data { color: var(--text-muted); font-size: 0.75rem; }
 
+        /* Grid View */
+        .products-grid {
+            display: none;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 16px;
+            padding: 16px;
+        }
+
+        .products-grid.active {
+            display: grid;
+        }
+
+        .product-card {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            overflow: hidden;
+            transition: all 0.2s;
+        }
+
+        .product-card:hover {
+            border-color: var(--accent);
+            transform: translateY(-2px);
+        }
+
+        .product-card-image {
+            width: 100%;
+            height: 180px;
+            background: var(--bg-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .product-card-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .product-card-image .no-img {
+            color: var(--text-muted);
+            font-size: 3rem;
+        }
+
+        .product-card-body {
+            padding: 14px;
+        }
+
+        .product-card-platform {
+            margin-bottom: 8px;
+        }
+
+        .product-card-title {
+            font-size: 0.85rem;
+            font-weight: 500;
+            line-height: 1.4;
+            margin-bottom: 10px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            color: var(--text);
+        }
+
+        .product-card-price {
+            display: flex;
+            align-items: baseline;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .product-card-price .current {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--success);
+        }
+
+        .product-card-price .original {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-decoration: line-through;
+        }
+
+        .product-card-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .product-card-rating {
+            font-size: 0.75rem;
+            color: var(--warning);
+        }
+
+        .product-card-tags {
+            display: flex;
+            gap: 4px;
+        }
+
+        .product-card-btn {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background: var(--accent);
+            color: white;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            transition: background 0.15s;
+        }
+
+        .product-card-btn:hover {
+            background: var(--accent-hover);
+        }
+
+        .table-content {
+            display: block;
+        }
+
+        .table-content.hidden {
+            display: none;
+        }
+
         /* No Results */
         .no-results {
             display: none;
@@ -619,6 +837,49 @@
         .no-results-icon { font-size: 2.5rem; color: var(--text-muted); margin-bottom: 12px; }
         .no-results h3 { font-size: 1rem; margin-bottom: 6px; }
         .no-results p { color: var(--text-muted); font-size: 0.85rem; }
+
+        /* Image Modal */
+        .image-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.9);
+            z-index: 10000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .image-modal.active {
+            display: flex;
+        }
+
+        .image-modal img {
+            max-width: 90%;
+            max-height: 90%;
+            object-fit: contain;
+            border-radius: 8px;
+        }
+
+        .image-modal-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 40px;
+            height: 40px;
+            background: var(--bg-tertiary);
+            border: none;
+            border-radius: 50%;
+            color: var(--text);
+            font-size: 1.2rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
 
         /* Toast */
         .toast-container {
@@ -661,6 +922,7 @@
             .platforms { display: none; }
             .platform-grid { grid-template-columns: repeat(3, 1fr); }
             .stats-row { grid-template-columns: repeat(2, 1fr); }
+            .product-image { width: 40px; height: 40px; }
         }
 
         @media (max-width: 600px) {
@@ -670,6 +932,8 @@
             .best-deal-body { flex-direction: column; }
             .best-deal-pricing { text-align: left; }
             .data-table { display: block; overflow-x: auto; }
+            .products-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+            .product-card-image { height: 140px; }
         }
     </style>
 </head>
@@ -728,25 +992,36 @@
                 <div class="table-header">
                     <div class="table-title"><i class="fas fa-list"></i> All Products</div>
                     <div class="table-actions">
+                        <div class="view-toggle">
+                            <button class="view-toggle-btn active" data-view="table" onclick="setView('table')">
+                                <i class="fas fa-list"></i> Table
+                            </button>
+                            <button class="view-toggle-btn" data-view="grid" onclick="setView('grid')">
+                                <i class="fas fa-th"></i> Grid
+                            </button>
+                        </div>
                         <button class="action-btn" onclick="exportResults('csv')"><i class="fas fa-file-csv"></i> CSV</button>
                         <button class="action-btn" onclick="exportResults('json')"><i class="fas fa-file-code"></i> JSON</button>
                         <button class="action-btn" onclick="exportResults('excel')"><i class="fas fa-file-excel"></i> Excel</button>
                     </div>
                 </div>
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th class="center" style="width:40px">#</th>
-                            <th style="width:100px">Platform</th>
-                            <th>Product</th>
-                            <th class="right" style="width:100px">Price</th>
-                            <th class="center" style="width:70px">Discount</th>
-                            <th class="center" style="width:80px">Rating</th>
-                            <th class="center" style="width:70px">Action</th>
-                        </tr>
-                    </thead>
-                    <tbody id="productsBody"></tbody>
-                </table>
+                <div id="tableContent" class="table-content">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th class="center" style="width:40px">#</th>
+                                <th style="width:100px">Platform</th>
+                                <th>Product</th>
+                                <th class="right" style="width:100px">Price</th>
+                                <th class="center" style="width:70px">Discount</th>
+                                <th class="center" style="width:80px">Rating</th>
+                                <th class="center" style="width:70px">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="productsBody"></tbody>
+                    </table>
+                </div>
+                <div id="productsGrid" class="products-grid"></div>
             </div>
         </section>
 
@@ -757,11 +1032,18 @@
         </div>
     </main>
 
+    <!-- Image Modal -->
+    <div id="imageModal" class="image-modal" onclick="closeImageModal()">
+        <button class="image-modal-close" onclick="closeImageModal()"><i class="fas fa-times"></i></button>
+        <img id="modalImage" src="" alt="Product Image">
+    </div>
+
     <div id="toastContainer" class="toast-container"></div>
 
     <script>
         let currentResults = null;
         let currentQuery = '';
+        let currentView = 'table';
 
         const platforms = [
             { name: 'Daraz', icon: 'fas fa-store' },
@@ -772,6 +1054,9 @@
         ];
 
         const $ = id => document.getElementById(id);
+
+        // Default placeholder image (base64 encoded simple gray box with icon)
+        const placeholderImage = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDIwMCAyMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIyMDAiIGhlaWdodD0iMjAwIiBmaWxsPSIjMjcyNzJhIi8+CjxwYXRoIGQ9Ik04NSA2NUg1NUM1MiA2NSA1MCA2NyA1MCA3MFYxMzBDNTAgMTMzIDUyIDEzNSA1NSAxMzVIMTQ1QzE0OCAxMzUgMTUwIDEzMyAxNTAgMTMwVjcwQzE1MCA2NyAxNDggNjUgMTQ1IDY1SDExNUwxMTAgNTVIOTBMODUgNjVaIiBzdHJva2U9IiM3MTcxN2EiIHN0cm9rZS13aWR0aD0iNCIgZmlsbD0ibm9uZSIvPgo8Y2lyY2xlIGN4PSIxMDAiIGN5PSI5NSIgcj0iMjUiIHN0cm9rZT0iIzcxNzE3YSIgc3Ryb2tlLXdpZHRoPSI0IiBmaWxsPSJub25lIi8+Cjwvc3ZnPgo=';
 
         $('searchForm').addEventListener('submit', async e => {
             e.preventDefault();
@@ -864,6 +1149,7 @@
             displayStats(result);
             if (result.best_deal) displayBestDeal(result.best_deal);
             displayProducts(result.products);
+            displayProductsGrid(result.products);
             $('resultsSection').classList.add('active');
             showToast(`Found ${result.total_products} products`, 'success');
         }
@@ -884,10 +1170,14 @@
             const orig = deal.original_price ? `<div class="orig-price">${deal.currency} ${deal.original_price.toLocaleString()}</div>` : '';
             const tags = `${deal.is_prime ? '<span class="tag prime"><i class="fas fa-bolt"></i> Prime</span>' : ''}${deal.free_shipping ? '<span class="tag shipping"><i class="fas fa-truck"></i> Free</span>' : ''}`;
             const url = deal.url || '#';
+            const imageUrl = deal.image_url || '';
 
             $('bestDeal').innerHTML = `
                 <div class="best-deal-header"><span class="best-deal-badge"><i class="fas fa-trophy"></i> Best Deal</span></div>
                 <div class="best-deal-body">
+                    <div class="best-deal-image" onclick="openImageModal('${imageUrl}')">
+                        ${imageUrl ? `<img src="${imageUrl}" alt="${deal.name}" onerror="this.onerror=null;this.parentElement.innerHTML='<i class=\\'fas fa-image no-image\\'></i>'">` : '<i class="fas fa-image no-image"></i>'}
+                    </div>
                     <div class="best-deal-info">
                         <div class="best-deal-title">${deal.name}</div>
                         <div class="best-deal-meta">
@@ -916,13 +1206,21 @@
                 const rating = p.rating ? `<div class="stars">${'★'.repeat(Math.round(p.rating))}${'☆'.repeat(5 - Math.round(p.rating))}</div>${p.reviews_count ? `<div class="reviews">${p.reviews_count.toLocaleString()}</div>` : ''}` : '<span class="no-data">-</span>';
                 const url = p.url || '';
                 const action = url ? `<a href="${url}" target="_blank" rel="noopener noreferrer" class="view-btn"><i class="fas fa-external-link-alt"></i></a>` : '<span class="no-data">-</span>';
+                const imageUrl = p.image_url || '';
 
                 return `<tr>
                     <td class="center"><span class="rank ${rankClass}">${i + 1}</span></td>
                     <td><span class="platform-badge ${pClass}">${getPlatformIcon(p.platform)} ${p.platform}</span></td>
                     <td class="product-cell">
-                        ${url ? `<a href="${url}" target="_blank" rel="noopener noreferrer" class="product-name" title="${p.name}">${p.name}</a>` : `<span class="product-name">${p.name}</span>`}
-                        <div class="product-tags">${tags}</div>
+                        <div class="product-info">
+                            <div class="product-image" onclick="openImageModal('${imageUrl}')" style="cursor: ${imageUrl ? 'pointer' : 'default'}">
+                                ${imageUrl ? `<img src="${imageUrl}" alt="${p.name}" onerror="this.onerror=null;this.src='${placeholderImage}'">` : `<i class="fas fa-image no-img"></i>`}
+                            </div>
+                            <div class="product-details">
+                                ${url ? `<a href="${url}" target="_blank" rel="noopener noreferrer" class="product-name" title="${p.name}">${p.name}</a>` : `<span class="product-name">${p.name}</span>`}
+                                <div class="product-tags">${tags}</div>
+                            </div>
+                        </div>
                     </td>
                     <td class="right"><div class="price-current">${p.currency} ${p.price.toLocaleString()}</div>${orig}</td>
                     <td class="center">${discount}</td>
@@ -931,6 +1229,68 @@
                 </tr>`;
             }).join('');
         }
+
+        function displayProductsGrid(products) {
+            $('productsGrid').innerHTML = products.map((p, i) => {
+                const pClass = p.platform.toLowerCase().replace(/\s/g, '');
+                const imageUrl = p.image_url || '';
+                const url = p.url || '#';
+                const tags = `${p.is_prime ? '<span class="tag prime"><i class="fas fa-bolt"></i></span>' : ''}${p.free_shipping ? '<span class="tag shipping"><i class="fas fa-truck"></i></span>' : ''}`;
+                const rating = p.rating ? `${'★'.repeat(Math.round(p.rating))}${'☆'.repeat(5 - Math.round(p.rating))} ${p.rating.toFixed(1)}` : '';
+
+                return `<div class="product-card">
+                    <div class="product-card-image" onclick="openImageModal('${imageUrl}')" style="cursor: ${imageUrl ? 'pointer' : 'default'}">
+                        ${imageUrl ? `<img src="${imageUrl}" alt="${p.name}" onerror="this.onerror=null;this.src='${placeholderImage}'">` : `<i class="fas fa-image no-img"></i>`}
+                    </div>
+                    <div class="product-card-body">
+                        <div class="product-card-platform">
+                            <span class="platform-badge ${pClass}">${getPlatformIcon(p.platform)} ${p.platform}</span>
+                        </div>
+                        <div class="product-card-title" title="${p.name}">${p.name}</div>
+                        <div class="product-card-price">
+                            <span class="current">${p.currency} ${p.price.toLocaleString()}</span>
+                            ${p.original_price ? `<span class="original">${p.currency} ${p.original_price.toLocaleString()}</span>` : ''}
+                        </div>
+                        <div class="product-card-meta">
+                            <span class="product-card-rating">${rating}</span>
+                            <div class="product-card-tags">${tags}</div>
+                        </div>
+                        ${url !== '#' ? `<a href="${url}" target="_blank" rel="noopener noreferrer" class="product-card-btn"><i class="fas fa-external-link-alt"></i> View Product</a>` : ''}
+                    </div>
+                </div>`;
+            }).join('');
+        }
+
+        function setView(view) {
+            currentView = view;
+            document.querySelectorAll('.view-toggle-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.view === view);
+            });
+            
+            if (view === 'table') {
+                $('tableContent').classList.remove('hidden');
+                $('productsGrid').classList.remove('active');
+            } else {
+                $('tableContent').classList.add('hidden');
+                $('productsGrid').classList.add('active');
+            }
+        }
+
+        function openImageModal(imageUrl) {
+            if (!imageUrl) return;
+            $('modalImage').src = imageUrl;
+            $('imageModal').classList.add('active');
+        }
+
+        function closeImageModal() {
+            $('imageModal').classList.remove('active');
+            $('modalImage').src = '';
+        }
+
+        // Close modal on Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeImageModal();
+        });
 
         function getPlatformIcon(name) {
             const icons = { 'Amazon': '<i class="fab fa-amazon"></i>', 'Flipkart': '<i class="fas fa-shopping-cart"></i>', 'Daraz': '<i class="fas fa-store"></i>', 'AliExpress': '<i class="fas fa-globe"></i>', 'eBay': '<i class="fas fa-gavel"></i>', 'Walmart': '<i class="fas fa-shopping-basket"></i>' };

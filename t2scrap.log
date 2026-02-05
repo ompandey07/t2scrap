@@ -360,3 +360,12 @@ Stacktrace:
 #17 0x7067e3a9caa4 <unknown>
 #18 0x7067e3b29c6c <unknown>
 
+2026-02-05 22:01:38,460 | DEBUG | Starting new HTTPS connection (1): www.ebay.com:443
+2026-02-05 22:01:38,461 | INFO | Fetching AliExpress: https://www.aliexpress.com/w/wholesale-macbook.html
+2026-02-05 22:01:38,461 | DEBUG | Starting new HTTPS connection (1): www.flipkart.com:443
+2026-02-05 22:01:38,462 | DEBUG | Starting new HTTPS connection (1): www.aliexpress.com:443
+2026-02-05 22:01:38,709 | DEBUG | https://www.aliexpress.com:443 "GET /w/wholesale-macbook.html HTTP/1.1" 200 1032
+2026-02-05 22:01:38,713 | DEBUG | Encoding detection: ascii is most likely the one.
+2026-02-05 22:01:38,965 | DEBUG | https://www.ebay.com:443 "GET /sch/i.html?_nkw=macbook&_sacat=0 HTTP/1.1" 200 None
+2026-02-05 22:01:39,066 | DEBUG | https://www.flipkart.com:443 "GET /search?q=macbook HTTP/1.1" 200 None
+2026-02-05 22:01:39,757 | DEBUG | Encoding detection: utf_8 is most likely the one.

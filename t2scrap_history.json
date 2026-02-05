@@ -80,5 +80,64 @@
     "best_price": 413.0,
     "best_platform": "Daraz",
     "search_time": 1.6543612480163574
+  },
+  {
+    "query": "macbook",
+    "timestamp": "2026-02-05T21:49:00.773708",
+    "total_products": 16,
+    "platforms": [
+      "Daraz",
+      "Amazon"
+    ],
+    "best_price": 413.0,
+    "best_platform": "Daraz",
+    "search_time": 1.6692898273468018
+  },
+  {
+    "query": "Acer Preditor",
+    "timestamp": "2026-02-05T21:49:46.959269",
+    "total_products": 15,
+    "platforms": [
+      "Daraz"
+    ],
+    "best_price": 37000.0,
+    "best_platform": "Daraz",
+    "search_time": 2.142977237701416
+  },
+  {
+    "query": "Macbook",
+    "timestamp": "2026-02-05T21:50:41.133522",
+    "total_products": 16,
+    "platforms": [
+      "Daraz",
+      "Amazon"
+    ],
+    "best_price": 413.0,
+    "best_platform": "Daraz",
+    "search_time": 1.5007686614990234
+  },
+  {
+    "query": "macbook",
+    "timestamp": "2026-02-05T21:56:19.670952",
+    "total_products": 16,
+    "platforms": [
+      "Daraz",
+      "Amazon"
+    ],
+    "best_price": 413.0,
+    "best_platform": "Daraz",
+    "search_time": 1.3262732028961182
+  },
+  {
+    "query": "macbook",
+    "timestamp": "2026-02-05T22:01:39.889317",
+    "total_products": 16,
+    "platforms": [
+      "Daraz",
+      "Amazon"
+    ],
+    "best_price": 413.0,
+    "best_platform": "Daraz",
+    "search_time": 1.4312019348144531
   }
 ]
