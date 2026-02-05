@@ -1,0 +1,84 @@
+[
+  {
+    "query": "macbook",
+    "timestamp": "2026-02-05T21:12:55.832682",
+    "total_products": 16,
+    "platforms": [
+      "Amazon",
+      "Daraz"
+    ],
+    "best_price": 413.0,
+    "best_platform": "Daraz",
+    "search_time": 7.023658037185669
+  },
+  {
+    "query": "Speaker",
+    "timestamp": "2026-02-05T21:14:48.609247",
+    "total_products": 15,
+    "platforms": [
+      "Daraz"
+    ],
+    "best_price": 360.0,
+    "best_platform": "Daraz",
+    "search_time": 6.335979461669922
+  },
+  {
+    "query": "Samsung Tv",
+    "timestamp": "2026-02-05T21:17:12.409036",
+    "total_products": 15,
+    "platforms": [
+      "Daraz"
+    ],
+    "best_price": 28467.0,
+    "best_platform": "Daraz",
+    "search_time": 6.40884256362915
+  },
+  {
+    "query": "Macbook Air",
+    "timestamp": "2026-02-05T21:26:03.546626",
+    "total_products": 16,
+    "platforms": [
+      "Amazon",
+      "Daraz"
+    ],
+    "best_price": 550.0,
+    "best_platform": "Daraz",
+    "search_time": 1.9625780582427979
+  },
+  {
+    "query": "apple macbook",
+    "timestamp": "2026-02-05T21:30:46.480727",
+    "total_products": 17,
+    "platforms": [
+      "Amazon",
+      "Daraz"
+    ],
+    "best_price": 413.0,
+    "best_platform": "Daraz",
+    "search_time": 2.19460391998291
+  },
+  {
+    "query": "apple macbook",
+    "timestamp": "2026-02-05T21:32:06.268284",
+    "total_products": 17,
+    "platforms": [
+      "Amazon",
+      "Daraz"
+    ],
+    "best_price": 413.0,
+    "best_platform": "Daraz",
+    "search_time": 1.621652603149414
+  },
+  {
+    "query": "Apple Macbook",
+    "timestamp": "2026-02-05T21:39:51.524659",
+    "total_products": 17,
+    "platforms": [
+      "Amazon",
+      "Daraz"
+    ],
+    "best_price": 413.0,
+    "best_platform": "Daraz",
+    "search_time": 1.6543612480163574
+  }
+]

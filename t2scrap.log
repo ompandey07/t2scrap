@@ -1,0 +1,362 @@
+2026-02-05 21:12:50,075 | ERROR | T2Scrap | Failed to create WebDriver: Message: session not created: cannot connect to chrome at 127.0.0.1:38489
+from session not created: This version of ChromeDriver only supports Chrome version 145
+Current browser version is 144.0.7559.109; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#sessionnotcreatedexception
+Stacktrace:
+#0 0x576f30fd0d0a <unknown>
+#1 0x576f309e0682 <unknown>
+#2 0x576f30a249cf <unknown>
+#3 0x576f30a23790 <unknown>
+#4 0x576f30a18791 <unknown>
+#5 0x576f30a6a8de <unknown>
+#6 0x576f30a69fcc <unknown>
+#7 0x576f30a2788f <unknown>
+#8 0x576f30a28651 <unknown>
+#9 0x576f30f95159 <unknown>
+#10 0x576f30f98061 <unknown>
+#11 0x576f30f81919 <unknown>
+#12 0x576f30f98c2e <unknown>
+#13 0x576f30f67c90 <unknown>
+#14 0x576f30fbd358 <unknown>
+#15 0x576f30fbd528 <unknown>
+#16 0x576f30fcf353 <unknown>
+#17 0x729e6a29caa4 <unknown>
+#18 0x729e6a329c6c <unknown>
+
+2026-02-05 21:12:51,336 | ERROR | T2Scrap | Failed to create WebDriver: Message: session not created: cannot connect to chrome at 127.0.0.1:58245
+from session not created: This version of ChromeDriver only supports Chrome version 145
+Current browser version is 144.0.7559.109; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#sessionnotcreatedexception
+Stacktrace:
+#0 0x59bfef7d0d0a <unknown>
+#1 0x59bfef1e0682 <unknown>
+#2 0x59bfef2249cf <unknown>
+#3 0x59bfef223790 <unknown>
+#4 0x59bfef218791 <unknown>
+#5 0x59bfef26a8de <unknown>
+#6 0x59bfef269fcc <unknown>
+#7 0x59bfef22788f <unknown>
+#8 0x59bfef228651 <unknown>
+#9 0x59bfef795159 <unknown>
+#10 0x59bfef798061 <unknown>
+#11 0x59bfef781919 <unknown>
+#12 0x59bfef798c2e <unknown>
+#13 0x59bfef767c90 <unknown>
+#14 0x59bfef7bd358 <unknown>
+#15 0x59bfef7bd528 <unknown>
+#16 0x59bfef7cf353 <unknown>
+#17 0x7428cdc9caa4 <unknown>
+#18 0x7428cdd29c6c <unknown>
+
+2026-02-05 21:12:53,539 | ERROR | T2Scrap | Failed to create WebDriver: Message: session not created: cannot connect to chrome at 127.0.0.1:46707
+from session not created: This version of ChromeDriver only supports Chrome version 145
+Current browser version is 144.0.7559.109; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#sessionnotcreatedexception
+Stacktrace:
+#0 0x611d0f8e5d0a <unknown>
+#1 0x611d0f2f5682 <unknown>
+#2 0x611d0f3399cf <unknown>
+#3 0x611d0f338790 <unknown>
+#4 0x611d0f32d791 <unknown>
+#5 0x611d0f37f8de <unknown>
+#6 0x611d0f37efcc <unknown>
+#7 0x611d0f33c88f <unknown>
+#8 0x611d0f33d651 <unknown>
+#9 0x611d0f8aa159 <unknown>
+#10 0x611d0f8ad061 <unknown>
+#11 0x611d0f896919 <unknown>
+#12 0x611d0f8adc2e <unknown>
+#13 0x611d0f87cc90 <unknown>
+#14 0x611d0f8d2358 <unknown>
+#15 0x611d0f8d2528 <unknown>
+#16 0x611d0f8e4353 <unknown>
+#17 0x7b888189caa4 <unknown>
+#18 0x7b8881929c6c <unknown>
+
+2026-02-05 21:12:54,675 | ERROR | T2Scrap | Failed to create WebDriver: Message: session not created: cannot connect to chrome at 127.0.0.1:50795
+from session not created: This version of ChromeDriver only supports Chrome version 145
+Current browser version is 144.0.7559.109; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#sessionnotcreatedexception
+Stacktrace:
+#0 0x6292d98bdd0a <unknown>
+#1 0x6292d92cd682 <unknown>
+#2 0x6292d93119cf <unknown>
+#3 0x6292d9310790 <unknown>
+#4 0x6292d9305791 <unknown>
+#5 0x6292d93578de <unknown>
+#6 0x6292d9356fcc <unknown>
+#7 0x6292d931488f <unknown>
+#8 0x6292d9315651 <unknown>
+#9 0x6292d9882159 <unknown>
+#10 0x6292d9885061 <unknown>
+#11 0x6292d986e919 <unknown>
+#12 0x6292d9885c2e <unknown>
+#13 0x6292d9854c90 <unknown>
+#14 0x6292d98aa358 <unknown>
+#15 0x6292d98aa528 <unknown>
+#16 0x6292d98bc353 <unknown>
+#17 0x79fc1c09caa4 <unknown>
+#18 0x79fc1c129c6c <unknown>
+
+2026-02-05 21:12:55,830 | ERROR | T2Scrap | Failed to create WebDriver: Message: session not created: cannot connect to chrome at 127.0.0.1:35079
+from session not created: This version of ChromeDriver only supports Chrome version 145
+Current browser version is 144.0.7559.109; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#sessionnotcreatedexception
+Stacktrace:
+#0 0x5b646a7ced0a <unknown>
+#1 0x5b646a1de682 <unknown>
+#2 0x5b646a2229cf <unknown>
+#3 0x5b646a221790 <unknown>
+#4 0x5b646a216791 <unknown>
+#5 0x5b646a2688de <unknown>
+#6 0x5b646a267fcc <unknown>
+#7 0x5b646a22588f <unknown>
+#8 0x5b646a226651 <unknown>
+#9 0x5b646a793159 <unknown>
+#10 0x5b646a796061 <unknown>
+#11 0x5b646a77f919 <unknown>
+#12 0x5b646a796c2e <unknown>
+#13 0x5b646a765c90 <unknown>
+#14 0x5b646a7bb358 <unknown>
+#15 0x5b646a7bb528 <unknown>
+#16 0x5b646a7cd353 <unknown>
+#17 0x777a3dc9caa4 <unknown>
+#18 0x777a3dd29c6c <unknown>
+
+2026-02-05 21:14:43,618 | ERROR | T2Scrap | Failed to create WebDriver: Message: session not created: cannot connect to chrome at 127.0.0.1:37923
+from session not created: This version of ChromeDriver only supports Chrome version 145
+Current browser version is 144.0.7559.109; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#sessionnotcreatedexception
+Stacktrace:
+#0 0x5b00deafed0a <unknown>
+#1 0x5b00de50e682 <unknown>
+#2 0x5b00de5529cf <unknown>
+#3 0x5b00de551790 <unknown>
+#4 0x5b00de546791 <unknown>
+#5 0x5b00de5988de <unknown>
+#6 0x5b00de597fcc <unknown>
+#7 0x5b00de55588f <unknown>
+#8 0x5b00de556651 <unknown>
+#9 0x5b00deac3159 <unknown>
+#10 0x5b00deac6061 <unknown>
+#11 0x5b00deaaf919 <unknown>
+#12 0x5b00deac6c2e <unknown>
+#13 0x5b00dea95c90 <unknown>
+#14 0x5b00deaeb358 <unknown>
+#15 0x5b00deaeb528 <unknown>
+#16 0x5b00deafd353 <unknown>
+#17 0x7d65c4c9caa4 <unknown>
+#18 0x7d65c4d29c6c <unknown>
+
+2026-02-05 21:14:43,929 | WARNING | T2Scrap | HTTP error: 503 Server Error: Service Unavailable for url: https://www.amazon.com/s?k=Speaker
+2026-02-05 21:14:44,779 | ERROR | T2Scrap | Failed to create WebDriver: Message: session not created: cannot connect to chrome at 127.0.0.1:41615
+from session not created: This version of ChromeDriver only supports Chrome version 145
+Current browser version is 144.0.7559.109; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#sessionnotcreatedexception
+Stacktrace:
+#0 0x5da9eb7f2d0a <unknown>
+#1 0x5da9eb202682 <unknown>
+#2 0x5da9eb2469cf <unknown>
+#3 0x5da9eb245790 <unknown>
+#4 0x5da9eb23a791 <unknown>
+#5 0x5da9eb28c8de <unknown>
+#6 0x5da9eb28bfcc <unknown>
+#7 0x5da9eb24988f <unknown>
+#8 0x5da9eb24a651 <unknown>
+#9 0x5da9eb7b7159 <unknown>
+#10 0x5da9eb7ba061 <unknown>
+#11 0x5da9eb7a3919 <unknown>
+#12 0x5da9eb7bac2e <unknown>
+#13 0x5da9eb789c90 <unknown>
+#14 0x5da9eb7df358 <unknown>
+#15 0x5da9eb7df528 <unknown>
+#16 0x5da9eb7f1353 <unknown>
+#17 0x74fd5b89caa4 <unknown>
+#18 0x74fd5b929c6c <unknown>
+
+2026-02-05 21:14:45,949 | ERROR | T2Scrap | Failed to create WebDriver: Message: session not created: cannot connect to chrome at 127.0.0.1:53411
+from session not created: This version of ChromeDriver only supports Chrome version 145
+Current browser version is 144.0.7559.109; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#sessionnotcreatedexception
+Stacktrace:
+#0 0x57171f4f1d0a <unknown>
+#1 0x57171ef01682 <unknown>
+#2 0x57171ef459cf <unknown>
+#3 0x57171ef44790 <unknown>
+#4 0x57171ef39791 <unknown>
+#5 0x57171ef8b8de <unknown>
+#6 0x57171ef8afcc <unknown>
+#7 0x57171ef4888f <unknown>
+#8 0x57171ef49651 <unknown>
+#9 0x57171f4b6159 <unknown>
+#10 0x57171f4b9061 <unknown>
+#11 0x57171f4a2919 <unknown>
+#12 0x57171f4b9c2e <unknown>
+#13 0x57171f488c90 <unknown>
+#14 0x57171f4de358 <unknown>
+#15 0x57171f4de528 <unknown>
+#16 0x57171f4f0353 <unknown>
+#17 0x7a48efc9caa4 <unknown>
+#18 0x7a48efd29c6c <unknown>
+
+2026-02-05 21:14:47,037 | ERROR | T2Scrap | Failed to create WebDriver: Message: session not created: cannot connect to chrome at 127.0.0.1:35451
+from session not created: This version of ChromeDriver only supports Chrome version 145
+Current browser version is 144.0.7559.109; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#sessionnotcreatedexception
+Stacktrace:
+#0 0x641b500f4d0a <unknown>
+#1 0x641b4fb04682 <unknown>
+#2 0x641b4fb489cf <unknown>
+#3 0x641b4fb47790 <unknown>
+#4 0x641b4fb3c791 <unknown>
+#5 0x641b4fb8e8de <unknown>
+#6 0x641b4fb8dfcc <unknown>
+#7 0x641b4fb4b88f <unknown>
+#8 0x641b4fb4c651 <unknown>
+#9 0x641b500b9159 <unknown>
+#10 0x641b500bc061 <unknown>
+#11 0x641b500a5919 <unknown>
+#12 0x641b500bcc2e <unknown>
+#13 0x641b5008bc90 <unknown>
+#14 0x641b500e1358 <unknown>
+#15 0x641b500e1528 <unknown>
+#16 0x641b500f3353 <unknown>
+#17 0x7136f429caa4 <unknown>
+#18 0x7136f4329c6c <unknown>
+
+2026-02-05 21:14:48,606 | ERROR | T2Scrap | Failed to create WebDriver: Message: session not created: cannot connect to chrome at 127.0.0.1:42395
+from session not created: This version of ChromeDriver only supports Chrome version 145
+Current browser version is 144.0.7559.109; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#sessionnotcreatedexception
+Stacktrace:
+#0 0x5b322cc6bd0a <unknown>
+#1 0x5b322c67b682 <unknown>
+#2 0x5b322c6bf9cf <unknown>
+#3 0x5b322c6be790 <unknown>
+#4 0x5b322c6b3791 <unknown>
+#5 0x5b322c7058de <unknown>
+#6 0x5b322c704fcc <unknown>
+#7 0x5b322c6c288f <unknown>
+#8 0x5b322c6c3651 <unknown>
+#9 0x5b322cc30159 <unknown>
+#10 0x5b322cc33061 <unknown>
+#11 0x5b322cc1c919 <unknown>
+#12 0x5b322cc33c2e <unknown>
+#13 0x5b322cc02c90 <unknown>
+#14 0x5b322cc58358 <unknown>
+#15 0x5b322cc58528 <unknown>
+#16 0x5b322cc6a353 <unknown>
+#17 0x7c8196e9caa4 <unknown>
+#18 0x7c8196f29c6c <unknown>
+
+2026-02-05 21:17:07,272 | ERROR | T2Scrap | Failed to create WebDriver: Message: session not created: cannot connect to chrome at 127.0.0.1:53747
+from session not created: This version of ChromeDriver only supports Chrome version 145
+Current browser version is 144.0.7559.109; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#sessionnotcreatedexception
+Stacktrace:
+#0 0x639d2bf5cd0a <unknown>
+#1 0x639d2b96c682 <unknown>
+#2 0x639d2b9b09cf <unknown>
+#3 0x639d2b9af790 <unknown>
+#4 0x639d2b9a4791 <unknown>
+#5 0x639d2b9f68de <unknown>
+#6 0x639d2b9f5fcc <unknown>
+#7 0x639d2b9b388f <unknown>
+#8 0x639d2b9b4651 <unknown>
+#9 0x639d2bf21159 <unknown>
+#10 0x639d2bf24061 <unknown>
+#11 0x639d2bf0d919 <unknown>
+#12 0x639d2bf24c2e <unknown>
+#13 0x639d2bef3c90 <unknown>
+#14 0x639d2bf49358 <unknown>
+#15 0x639d2bf49528 <unknown>
+#16 0x639d2bf5b353 <unknown>
+#17 0x7438ba09caa4 <unknown>
+#18 0x7438ba129c6c <unknown>
+
+2026-02-05 21:17:07,583 | WARNING | T2Scrap | HTTP error: 503 Server Error: Service Unavailable for url: https://www.amazon.com/s?k=Samsung+Tv
+2026-02-05 21:17:08,534 | ERROR | T2Scrap | Failed to create WebDriver: Message: session not created: cannot connect to chrome at 127.0.0.1:48665
+from session not created: This version of ChromeDriver only supports Chrome version 145
+Current browser version is 144.0.7559.109; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#sessionnotcreatedexception
+Stacktrace:
+#0 0x5d9d1e0f6d0a <unknown>
+#1 0x5d9d1db06682 <unknown>
+#2 0x5d9d1db4a9cf <unknown>
+#3 0x5d9d1db49790 <unknown>
+#4 0x5d9d1db3e791 <unknown>
+#5 0x5d9d1db908de <unknown>
+#6 0x5d9d1db8ffcc <unknown>
+#7 0x5d9d1db4d88f <unknown>
+#8 0x5d9d1db4e651 <unknown>
+#9 0x5d9d1e0bb159 <unknown>
+#10 0x5d9d1e0be061 <unknown>
+#11 0x5d9d1e0a7919 <unknown>
+#12 0x5d9d1e0bec2e <unknown>
+#13 0x5d9d1e08dc90 <unknown>
+#14 0x5d9d1e0e3358 <unknown>
+#15 0x5d9d1e0e3528 <unknown>
+#16 0x5d9d1e0f5353 <unknown>
+#17 0x71aa1049caa4 <unknown>
+#18 0x71aa10529c6c <unknown>
+
+2026-02-05 21:17:09,720 | ERROR | T2Scrap | Failed to create WebDriver: Message: session not created: cannot connect to chrome at 127.0.0.1:46691
+from session not created: This version of ChromeDriver only supports Chrome version 145
+Current browser version is 144.0.7559.109; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#sessionnotcreatedexception
+Stacktrace:
+#0 0x5f5b2be2ed0a <unknown>
+#1 0x5f5b2b83e682 <unknown>
+#2 0x5f5b2b8829cf <unknown>
+#3 0x5f5b2b881790 <unknown>
+#4 0x5f5b2b876791 <unknown>
+#5 0x5f5b2b8c88de <unknown>
+#6 0x5f5b2b8c7fcc <unknown>
+#7 0x5f5b2b88588f <unknown>
+#8 0x5f5b2b886651 <unknown>
+#9 0x5f5b2bdf3159 <unknown>
+#10 0x5f5b2bdf6061 <unknown>
+#11 0x5f5b2bddf919 <unknown>
+#12 0x5f5b2bdf6c2e <unknown>
+#13 0x5f5b2bdc5c90 <unknown>
+#14 0x5f5b2be1b358 <unknown>
+#15 0x5f5b2be1b528 <unknown>
+#16 0x5f5b2be2d353 <unknown>
+#17 0x7157d569caa4 <unknown>
+#18 0x7157d5729c6c <unknown>
+
+2026-02-05 21:17:11,248 | ERROR | T2Scrap | Failed to create WebDriver: Message: session not created: cannot connect to chrome at 127.0.0.1:39459
+from session not created: This version of ChromeDriver only supports Chrome version 145
+Current browser version is 144.0.7559.109; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#sessionnotcreatedexception
+Stacktrace:
+#0 0x596b464edd0a <unknown>
+#1 0x596b45efd682 <unknown>
+#2 0x596b45f419cf <unknown>
+#3 0x596b45f40790 <unknown>
+#4 0x596b45f35791 <unknown>
+#5 0x596b45f878de <unknown>
+#6 0x596b45f86fcc <unknown>
+#7 0x596b45f4488f <unknown>
+#8 0x596b45f45651 <unknown>
+#9 0x596b464b2159 <unknown>
+#10 0x596b464b5061 <unknown>
+#11 0x596b4649e919 <unknown>
+#12 0x596b464b5c2e <unknown>
+#13 0x596b46484c90 <unknown>
+#14 0x596b464da358 <unknown>
+#15 0x596b464da528 <unknown>
+#16 0x596b464ec353 <unknown>
+#17 0x74be4909caa4 <unknown>
+#18 0x74be49129c6c <unknown>
+
+2026-02-05 21:17:12,403 | ERROR | T2Scrap | Failed to create WebDriver: Message: session not created: cannot connect to chrome at 127.0.0.1:52373
+from session not created: This version of ChromeDriver only supports Chrome version 145
+Current browser version is 144.0.7559.109; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#sessionnotcreatedexception
+Stacktrace:
+#0 0x5a10e1d67d0a <unknown>
+#1 0x5a10e1777682 <unknown>
+#2 0x5a10e17bb9cf <unknown>
+#3 0x5a10e17ba790 <unknown>
+#4 0x5a10e17af791 <unknown>
+#5 0x5a10e18018de <unknown>
+#6 0x5a10e1800fcc <unknown>
+#7 0x5a10e17be88f <unknown>
+#8 0x5a10e17bf651 <unknown>
+#9 0x5a10e1d2c159 <unknown>
+#10 0x5a10e1d2f061 <unknown>
+#11 0x5a10e1d18919 <unknown>
+#12 0x5a10e1d2fc2e <unknown>
+#13 0x5a10e1cfec90 <unknown>
+#14 0x5a10e1d54358 <unknown>
+#15 0x5a10e1d54528 <unknown>
+#16 0x5a10e1d66353 <unknown>
+#17 0x7067e3a9caa4 <unknown>
+#18 0x7067e3b29c6c <unknown>
+

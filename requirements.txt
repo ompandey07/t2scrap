@@ -1,0 +1,19 @@
+# Core Dependencies
+requests>=2.31.0
+beautifulsoup4>=4.12.0
+pandas>=2.0.0
+tabulate>=0.9.0
+colorama>=0.4.6
+lxml>=4.9.0
+
+# Selenium (for JavaScript sites)
+selenium>=4.15.0
+webdriver-manager>=4.0.0
+undetected-chromedriver>=3.5.0
+
+# Enhanced UI
+rich>=13.0.0
+
+# Optional
+openpyxl>=3.1.0
+fake-useragent>=1.4.0
